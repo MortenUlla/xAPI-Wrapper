@@ -7,78 +7,21 @@
   <style>
     body{font-family:system-ui,sans-serif;margin:0;background:#0b1020;color:#e8eefc}
     .header{background:#0a132a;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1)}
-    select,button{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:#111b34;color:#fff;cursor:pointer}
-    iframe{width:100%;height:calc(100vh - 100px);border:none;background:#000}
-    .error{padding:10px 16px;background:#402020;color:#ffd5d5;border-top:1px solid rgba(255,255,255,.1);display:none}
-    .links{padding:8px 16px;font-size:14px;color:#a8b3cf}
-    .links a{color:#e8eefc}
+    .links a{display:inline-block;margin-right:12px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:#111b34;color:#fff;text-decoration:none}
+    iframe{width:100%;height:calc(100vh - 68px);border:none;background:#000}
   </style>
 </head>
 <body>
   <div class="header">
     <div>🌐 Velg språk</div>
-    <div>
-      <select id="lang">
-        <option value="no">🇳🇴 Norsk</option>
-        <option value="en">🇬🇧 English</option>
-        <option value="pl">🇵🇱 Polski</option>
-      </select>
-      <button id="openBtn" type="button">Åpne</button>
+    <div class="links">
+      <a href="lang/no/index.html" target="player">NO</a>
+      <a href="lang/en/index.html" target="player">EN</a>
+      <a href="lang/pl/index.html" target="player">PL</a>
     </div>
   </div>
 
-  <div id="msg" class="error"></div>
-
-  <div class="links">
-    Fallback (åpnes i samme fane): 
-    <a href="lang/no/index.html">NO</a> ·
-    <a href="lang/en/index.html">EN</a> ·
-    <a href="lang/pl/index.html">PL</a>
-  </div>
-
-  <iframe id="player" title="Course Player"></iframe>
-
-  <script>
-    const langSel = document.getElementById("lang");
-    const openBtn = document.getElementById("openBtn");
-    const frame = document.getElementById("player");
-    const msg = document.getElementById("msg");
-
-    function setError(text){
-      msg.textContent = text;
-      msg.style.display = "block";
-    }
-
-    function loadLang() {
-      const lang = langSel.value;
-      const url = "lang/" + lang + "/index.html";
-      msg.style.display = "none";
-      frame.removeAttribute("src"); // reset før ny last
-      frame.src = url;
-      localStorage.setItem("lastLang", lang);
-    }
-
-    // UI-handlers
-    openBtn.addEventListener("click", loadLang);
-    langSel.addEventListener("keydown", e => { if (e.key === "Enter") loadLang(); });
-
-    // Last valgt språk på start
-    window.addEventListener("load", () => {
-      const p = new URLSearchParams(location.search);
-      const qsLang = p.get("lang");
-      const last = localStorage.getItem("lastLang");
-      const start = ["no","en","pl"].includes(qsLang) ? qsLang : (["no","en","pl"].includes(last) ? last : "no");
-      langSel.value = start;
-      loadLang();
-
-      // enkel kontroll etter litt tid
-      setTimeout(() => {
-        // hvis iframen ikke har navigert (f.eks. feil sti), vis hint
-        if (!frame.contentWindow) {
-          setError("Kunne ikke laste lang/" + langSel.value + "/index.html. Sjekk at filen finnes og at mappenavn/filnavn er små bokstaver.");
-        }
-      }, 600);
-    });
-  </script>
+  <!-- Navn på iframen matcher target på lenkene -->
+  <iframe name="player" title="Course Player" src="lang/no/index.html"></iframe>
 </body>
 </html>
