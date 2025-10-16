@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 1 – Multilingual (NO / EN / PL)</title>
+  <style>
+    body {{font-family: system-ui, sans-serif; margin: 0; background: #0b1020; color: #e8eefc;}}
+    .header {{background: #0a132a; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);}}
+    select, button {{padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #111b34; color: #fff;}}
+    iframe {{width: 100%; height: calc(100vh - 60px); border: none; background: #000;}}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>🌐 Velg språk</div>
+    <div>
+      <select id="lang">
+        <option value="no">🇳🇴 Norsk</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="pl">🇵🇱 Polski</option>
+      </select>
+      <button onclick="loadLang()">Åpne</button>
+    </div>
+  </div>
+  <iframe id="player" title="Course Player"></iframe>
+  <script>
+    function loadLang() {{
+      const lang = document.getElementById("lang").value;
+      const qs = window.location.search || "";
+      const frame = document.getElementById("player");
+      frame.src = "lang/" + lang + "/index.html" + qs;
+      localStorage.setItem("lastLang", lang);
+    }}
+    window.onload = () => {{
+      const last = localStorage.getItem("lastLang") || "no";
+      document.getElementById("lang").value = last;
+      loadLang();
+    }};
+  </script>
+</body>
+</html>
