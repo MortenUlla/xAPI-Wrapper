@@ -9,6 +9,7 @@
     .header{background:#0a132a;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1)}
     select,button{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:#111b34;color:#fff}
     iframe{width:100%;height:calc(100vh - 60px);border:none;background:#000}
+    .error{padding:10px 16px;background:#402020;color:#ffd5d5;border-top:1px solid rgba(255,255,255,.1)}
   </style>
 </head>
 <body>
@@ -24,26 +25,45 @@
     </div>
   </div>
 
+  <div id="msg" class="error" style="display:none"></div>
   <iframe id="player" title="Course Player"></iframe>
 
   <script>
-    const openBtn = document.getElementById("openBtn");
+    const qs = new URLSearchParams(location.search);
     const langSel = document.getElementById("lang");
+    const openBtn = document.getElementById("openBtn");
     const frame = document.getElementById("player");
+    const msg = document.getElementById("msg");
+
+    function setError(text){
+      msg.textContent = text;
+      msg.style.display = "block";
+    }
 
     function loadLang() {
       const lang = langSel.value;
-      frame.src = "lang/" + lang + "/index.html";
+      const url = "lang/" + lang + "/index.html";
+      frame.src = url;
       localStorage.setItem("lastLang", lang);
+      msg.style.display = "none";
+      // liten sjekk etter last
+      setTimeout(() => {
+        if (!frame.contentWindow) {
+          setError("Kunne ikke laste " + url + ". Sjekk at filen finnes og at navnet er riktig (små bokstaver).");
+        }
+      }, 300);
     }
 
     openBtn.addEventListener("click", loadLang);
-    langSel.addEventListener("change", e => localStorage.setItem("lastLang", e.target.value));
+    langSel.addEventListener("keydown", e => { if (e.key === "Enter") loadLang(); });
 
     window.addEventListener("load", () => {
-      const last = localStorage.getItem("lastLang") || "no";
-      langSel.value = last;
-      try { loadLang(); } catch(e){ console.error(e); }
+      // url-parameter overstyrer lagret språk
+      const fromQs = qs.get("lang");
+      const last = localStorage.getItem("lastLang");
+      const start = ["no","en","pl"].includes(fromQs) ? fromQs : (["no","en","pl"].includes(last) ? last : "no");
+      langSel.value = start;
+      loadLang();
     });
   </script>
 </body>
