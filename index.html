@@ -1,37 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="no">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Module 1 – Multilingual (NO / EN / PL)</title>
+  <title>Velg språk – Multilang Wrapper</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      background: #0b1020;
-      color: #e8eefc;
-    }
-    .header {
-      background: #0a132a;
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    select, button {
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: #111b34;
-      color: #fff;
-    }
-    iframe {
-      width: 100%;
-      height: calc(100vh - 60px);
-      border: none;
-      background: #000;
-    }
+    body{font-family:system-ui,sans-serif;margin:0;background:#0b1020;color:#e8eefc}
+    .header{background:#0a132a;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1)}
+    select,button{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:#111b34;color:#fff}
+    iframe{width:100%;height:calc(100vh - 60px);border:none;background:#000}
   </style>
 </head>
 <body>
@@ -43,27 +20,31 @@
         <option value="en">🇬🇧 English</option>
         <option value="pl">🇵🇱 Polski</option>
       </select>
-      <button onclick="loadLang()">Åpne</button>
+      <button id="openBtn">Åpne</button>
     </div>
   </div>
 
   <iframe id="player" title="Course Player"></iframe>
 
   <script>
+    const openBtn = document.getElementById("openBtn");
+    const langSel = document.getElementById("lang");
+    const frame = document.getElementById("player");
+
     function loadLang() {
-      const lang = document.getElementById("lang").value;
-      const qs = window.location.search || "";
-      const frame = document.getElementById("player");
-      frame.src = "lang/" + lang + "/index.html" + qs;
+      const lang = langSel.value;
+      frame.src = "lang/" + lang + "/index.html";
       localStorage.setItem("lastLang", lang);
     }
 
-    // Last sist brukte språk automatisk
-    window.onload = () => {
+    openBtn.addEventListener("click", loadLang);
+    langSel.addEventListener("change", e => localStorage.setItem("lastLang", e.target.value));
+
+    window.addEventListener("load", () => {
       const last = localStorage.getItem("lastLang") || "no";
-      document.getElementById("lang").value = last;
-      loadLang();
-    };
+      langSel.value = last;
+      try { loadLang(); } catch(e){ console.error(e); }
+    });
   </script>
 </body>
 </html>
